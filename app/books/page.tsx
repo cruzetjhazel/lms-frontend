@@ -11,23 +11,26 @@ export default function BooksPage() {
   const [editForm, setEditForm] = useState({ title: '', author: '', category: '' });
   const [search, setSearch] = useState('');
 
+  // Add Book
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.author || !form.category) return;
-
     const newBook = { ...form, id: Date.now() };
     setBooks([newBook, ...books]);
     setForm({ title: '', author: '', category: '', status: 'Available' });
   };
 
+  // Delete Book
   const handleDelete = (id: number) => {
     setBooks(books.filter((book) => book.id !== id));
   };
 
+  // View Book
   const handleView = (book: any) => {
     alert(`Title: ${book.title}\nAuthor: ${book.author}\nCategory: ${book.category}\nStatus: ${book.status}`);
   };
 
+  // Edit Book
   const handleEditClick = (book: any) => {
     setEditingId(book.id);
     setEditForm({ title: book.title, author: book.author, category: book.category });
