@@ -10,8 +10,6 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Simulated login check (replace with real auth later)
     if (email && password) {
       router.push('/dashboard')
     } else {
@@ -20,12 +18,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="relative flex flex-col items-center justify-center min-h-screen">
+      {/* Background image*/}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: "url('/background.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.8,
+        }}
+      />
+      {/* Welcome header */}
+      <h1 className="relative z-10 text-6xl font-bold text-white mb-8 drop-shadow text-center">
+        Welcome
+      </h1>
+      {/* Login form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+        className="relative z-10 bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: '#6B3F08' }}>
           Login
         </h1>
         <input
@@ -48,7 +61,8 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="w-full text-white py-2 rounded-md transition hover:brightness-110"
+          style={{ backgroundColor: '#6B3F08' }}
         >
           Log In
         </button>

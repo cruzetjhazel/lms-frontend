@@ -1,185 +1,87 @@
 'use client';
 
+import Header from '../../components/Header';
+import Sidebar from '../../components/Sidebar';
 import { useState } from 'react';
 
+type Book = {
+  id: number;
+  title: string;
+  author: string;
+  year: number;
+  available: boolean;
+};
+
+const sampleBooks: Book[] = [
+  { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', year: 1925, available: true },
+  { id: 2, title: '1984', author: 'George Orwell', year: 1949, available: false },
+  { id: 3, title: 'To Kill a Mockingbird', author: 'Harper Lee', year: 1960, available: true },
+];
+
 export default function BooksPage() {
-  const [form, setForm] = useState({ title: '', author: '', category: '', status: 'Available' });
-  const [books, setBooks] = useState([
-    { id: 1, title: 'Introduction to React', author: 'Dan Abramov', category: 'Programming', status: 'Available' },
-  ]);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({ title: '', author: '', category: '' });
+  const [books, setBooks] = useState<Book[]>(sampleBooks);
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.title || !form.author || !form.category) return;
-
-    const newBook = { ...form, id: Date.now() };
-    setBooks([newBook, ...books]);
-    setForm({ title: '', author: '', category: '', status: 'Available' });
-  };
-
-  const handleDelete = (id: number) => {
-    setBooks(books.filter((book) => book.id !== id));
-  };
-
-  const handleView = (book: any) => {
-    alert(`Title: ${book.title}\nAuthor: ${book.author}\nCategory: ${book.category}\nStatus: ${book.status}`);
-  };
-
-  const handleEditClick = (book: any) => {
-    setEditingId(book.id);
-    setEditForm({ title: book.title, author: book.author, category: book.category });
-  };
-
-  const handleEditSave = (id: number) => {
-    setBooks(
-      books.map((book) =>
-        book.id === id ? { ...book, ...editForm } : book
+  const handleBorrow = (id: number) => {
+    // Here you would call your backend to borrow the book
+    setBooks(books =>
+      books.map(book =>
+        book.id === id ? { ...book, available: false } : book
       )
     );
-    setEditingId(null);
-  };
-
-  const handleEditCancel = () => {
-    setEditingId(null);
+    alert('Book borrowed!');
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">Book List</h2>
-
-      {/* Add Book Form */}
-      <form onSubmit={handleAdd} className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <input
-          type="text"
-          placeholder="Title"
-          className="border p-2 rounded"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Author"
-          className="border p-2 rounded"
-          value={form.author}
-          onChange={(e) => setForm({ ...form, author: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          className="border p-2 rounded"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add Book
-        </button>
-      </form>
-
-      {/* Book Table */}
-      <table className="w-full table-auto border-collapse border border-gray-300">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border px-4 py-2">ID</th>
-            <th className="border px-4 py-2">Title</th>
-            <th className="border px-4 py-2">Author</th>
-            <th className="border px-4 py-2">Category</th>
-            <th className="border px-4 py-2">Status</th>
-            <th className="border px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {books.map((book) => (
-            <tr key={book.id}>
-              <td className="border px-4 py-2">{book.id}</td>
-              <td className="border px-4 py-2">
-                {editingId === book.id ? (
-                  <input
-                    value={editForm.title}
-                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                    className="border p-1 rounded w-full"
-                  />
-                ) : (
-                  book.title
-                )}
-              </td>
-              <td className="border px-4 py-2">
-                {editingId === book.id ? (
-                  <input
-                    value={editForm.author}
-                    onChange={(e) => setEditForm({ ...editForm, author: e.target.value })}
-                    className="border p-1 rounded w-full"
-                  />
-                ) : (
-                  book.author
-                )}
-              </td>
-              <td className="border px-4 py-2">
-                {editingId === book.id ? (
-                  <input
-                    value={editForm.category}
-                    onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                    className="border p-1 rounded w-full"
-                  />
-                ) : (
-                  book.category
-                )}
-              </td>
-              <td className="border px-4 py-2 text-green-600">{book.status}</td>
-              <td className="border px-4 py-2 space-x-2">
-                {editingId === book.id ? (
-                  <>
-                    <button
-                      onClick={() => handleEditSave(book.id)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={handleEditCancel}
-                      className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded text-xs"
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => handleView(book)}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleEditClick(book)}
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-xs"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(book.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-          {books.length === 0 && (
-            <tr>
-              <td colSpan={6} className="text-center p-4 text-gray-500">
-                No books added.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <Header />
+      <div className="flex min-h-screen" style={{
+        backgroundImage: "url('/background2.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}>
+        <Sidebar />
+        <main className="flex-1 p-10">
+          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Books</h1>
+            <table className="w-full table-auto border-collapse border border-gray-300 text-sm">
+              <thead className="bg-gray-100 text-left">
+                <tr>
+                  <th className="border px-4 py-2">Title</th>
+                  <th className="border px-4 py-2">Author</th>
+                  <th className="border px-4 py-2">Year</th>
+                  <th className="border px-4 py-2">Status</th>
+                  <th className="border px-4 py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {books.map(book => (
+                  <tr key={book.id}>
+                    <td className="border px-4 py-2">{book.title}</td>
+                    <td className="border px-4 py-2">{book.author}</td>
+                    <td className="border px-4 py-2">{book.year}</td>
+                    <td className="border px-4 py-2">
+                      {book.available ? (
+                        <span className="text-green-600">Available</span>
+                      ) : (
+                        <span className="text-red-500">Borrowed</span>
+                      )}
+                    </td>
+                    <td className="border px-4 py-2">
+                      <button
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs disabled:opacity-50"
+                        onClick={() => handleBorrow(book.id)}
+                        disabled={!book.available}
+                      >
+                        Borrow
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </>
   );
 }

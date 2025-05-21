@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import Header from '../../components/Header';
 
-export default function BorrowReturnPage() {
+export default function BorrowPage() {
   const [form, setForm] = useState({
     user: '',
     bookTitle: '',
-    type: 'Borrow', // Borrow or Return
+    type: 'Borrow', // Borrow 
     date: '',
     status: 'Pending',
   });
@@ -30,6 +31,8 @@ export default function BorrowReturnPage() {
     date: '',
     status: 'Pending',
   });
+
+  const [search, setSearch] = useState(''); // <-- Add search state
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,9 +77,27 @@ export default function BorrowReturnPage() {
     setEditingId(null);
   };
 
+  // Filter records based on search input
+  const filteredRecords = records.filter(
+    (record) =>
+      record.user.toLowerCase().includes(search.toLowerCase()) ||
+      record.bookTitle.toLowerCase().includes(search.toLowerCase()) ||
+      record.type.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">Borrow / Return Records</h2>
+      <Header />
+      <h2 className="text-2xl font-semibold mb-4">Borrow Records</h2>
+
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search by user, book title, or type..."
+        className="border p-2 rounded mb-4 w-full"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
       {/* Add Record Form */}
       <form onSubmit={handleAdd} className="mb-6 grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -130,7 +151,7 @@ export default function BorrowReturnPage() {
           </tr>
         </thead>
         <tbody>
-          {records.map((record) => (
+          {filteredRecords.map((record) => (
             <tr key={record.id}>
               <td className="border px-4 py-2">{record.id}</td>
               <td className="border px-4 py-2">
@@ -223,10 +244,10 @@ export default function BorrowReturnPage() {
               </td>
             </tr>
           ))}
-          {records.length === 0 && (
+          {filteredRecords.length === 0 && (
             <tr>
               <td colSpan={7} className="text-center p-4 text-gray-500">
-                No records added.
+                No records found.
               </td>
             </tr>
           )}

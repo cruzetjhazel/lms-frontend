@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Header from '../../components/Header';
 
 export default function UsersPage() {
   const [form, setForm] = useState({ name: '', email: '', role: '' });
@@ -48,6 +49,7 @@ export default function UsersPage() {
 
   return (
     <div className="p-6">
+      <Header />
       <h2 className="text-2xl font-semibold mb-4">Users</h2>
 
       {/* Add User Form */}
