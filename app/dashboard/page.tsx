@@ -5,14 +5,18 @@ export default function DashboardPage() {
   return (
     <>
       <Header />
-      <div className="flex min-h-screen" style={{
-        backgroundImage: "url('/background2.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}>
+      <div
+        className="flex min-h-screen"
+        style={{
+          backgroundColor: '#F8F6F5', // Updated background color
+          backgroundImage: "url('/background2.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <Sidebar />
         <main className="flex-1 p-10">
-          <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-8">
+          <div className="max-w-6xl mx-auto bg-white bg-opacity-50 rounded-xl shadow-md p-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-6"></h1>
             {/* Table Section */}
             <div className="overflow-x-auto">

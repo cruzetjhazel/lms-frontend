@@ -26,7 +26,7 @@ export default function LoginPage() {
           backgroundImage: "url('/background.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.8,
+          opacity: 0.9,
         }}
       />
       {/* Welcome header */}
@@ -36,7 +36,7 @@ export default function LoginPage() {
       {/* Login form */}
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+        className="relative z-10 bg-white bg-opacity-80 p-8 rounded-lg shadow-md w-full max-w-md"
       >
         <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: '#6B3F08' }}>
           Login
