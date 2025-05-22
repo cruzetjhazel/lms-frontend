@@ -1,41 +1,81 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
+import api from '../api/config';
 
 export default function BooksPage() {
   const [form, setForm] = useState({ title: '', author: '', category: '', status: 'Available' });
-  const [books, setBooks] = useState([
-    { id: 1, title: 'Introduction to React', author: 'Dan Abramov', category: 'Programming', status: 'Available' },
-  ]);
-  const [lastId, setLastId] = useState(1);
+  const [books, setBooks] = useState([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState({ title: '', author: '', category: '' });
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const rowsPerPage = 6;
 
+  // Fetch books on component mount
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/admin/books');
+      setBooks(response.data);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to fetch books');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Add Book
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.author || !form.category) return;
-    const newId = lastId + 1;
-    const newBook = { ...form, id: newId };
-    setBooks([...books, newBook]);
-    setForm({ title: '', author: '', category: '', status: 'Available' });
-    setCurrentPage(1);
-    setLastId(newId);
+
+    try {
+      setLoading(true);
+      const response = await api.post('/admin/books', form);
+      setBooks([response.data, ...books]);
+      setForm({ title: '', author: '', category: '', status: 'Available' });
+      setCurrentPage(1);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to add book');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Delete Book
-  const handleDelete = (id: number) => {
-    setBooks(books.filter((book) => book.id !== id));
+  const handleDelete = async (id: number) => {
+    try {
+      setLoading(true);
+      await api.delete(`/admin/books/${id}`);
+      setBooks(books.filter((book: any) => book.id !== id));
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to delete book');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // View Book
-  const handleView = (book: any) => {
-    alert(`Title: ${book.title}\nAuthor: ${book.author}\nCategory: ${book.category}\nStatus: ${book.status}`);
+  const handleView = async (id: number) => {
+    try {
+      setLoading(true);
+      const response = await api.get(`/admin/books/${id}`);
+      const book = response.data;
+      alert(`Title: ${book.title}\nAuthor: ${book.author}\nCategory: ${book.category}\nStatus: ${book.status}`);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to fetch book details');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Edit Book
@@ -44,13 +84,17 @@ export default function BooksPage() {
     setEditForm({ title: book.title, author: book.author, category: book.category });
   };
 
-  const handleEditSave = (id: number) => {
-    setBooks(
-      books.map((book) =>
-        book.id === id ? { ...book, ...editForm } : book
-      )
-    );
-    setEditingId(null);
+  const handleEditSave = async (id: number) => {
+    try {
+      setLoading(true);
+      const response = await api.put(`/admin/books/${id}`, editForm);
+      setBooks(books.map((book: any) => book.id === id ? response.data : book));
+      setEditingId(null);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to update book');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditCancel = () => {
@@ -58,18 +102,16 @@ export default function BooksPage() {
   };
 
   // Filtered and paginated data
-  const filteredBooks = books.filter(
-    (book) =>
-      book.title.toLowerCase().includes(search.toLowerCase()) ||
-      book.author.toLowerCase().includes(search.toLowerCase()) ||
-      book.category.toLowerCase().includes(search.toLowerCase())
+  const filteredBooks = books.filter((book: any) =>
+    book.title.toLowerCase().includes(search.toLowerCase()) ||
+    book.author.toLowerCase().includes(search.toLowerCase()) ||
+    book.category.toLowerCase().includes(search.toLowerCase())
   );
   const totalPages = Math.max(1, Math.ceil(filteredBooks.length / rowsPerPage));
   const paginatedBooks = filteredBooks.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
-  const emptyRows = rowsPerPage - paginatedBooks.length;
 
   const handlePrevPage = () => setCurrentPage((p) => Math.max(1, p - 1));
   const handleNextPage = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
@@ -91,6 +133,11 @@ export default function BooksPage() {
         <main className="flex-1 p-10">
           <div className="p-6">
             <h2 className="text-2xl font-semibold mb-4">Book List</h2>
+            {error && (
+              <div className="mb-4 p-2 text-red-600 bg-red-100 rounded">
+                {error}
+              </div>
+            )}
             {/* Search Bar */}
             <input
               type="text"
@@ -128,113 +175,113 @@ export default function BooksPage() {
               <button
                 type="submit"
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                disabled={loading}
               >
-                Add Book
+                {loading ? 'Adding...' : 'Add Book'}
               </button>
             </form>
-            <table className="w-full table-auto border-collapse border border-gray-300 bg-white">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border px-4 py-2">ID</th>
-                  <th className="border px-4 py-2">Title</th>
-                  <th className="border px-4 py-2">Author</th>
-                  <th className="border px-4 py-2">Category</th>
-                  <th className="border px-4 py-2">Status</th>
-                  <th className="border px-4 py-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedBooks.map((book) => (
-                  <tr key={book.id}>
-                    <td className="border px-4 py-2">{book.id}</td>
-                    <td className="border px-4 py-2">
-                      {editingId === book.id ? (
-                        <input
-                          value={editForm.title}
-                          onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                          className="border p-1 rounded w-full"
-                        />
-                      ) : (
-                        book.title
-                      )}
-                    </td>
-                    <td className="border px-4 py-2">
-                      {editingId === book.id ? (
-                        <input
-                          value={editForm.author}
-                          onChange={(e) => setEditForm({ ...editForm, author: e.target.value })}
-                          className="border p-1 rounded w-full"
-                        />
-                      ) : (
-                        book.author
-                      )}
-                    </td>
-                    <td className="border px-4 py-2">
-                      {editingId === book.id ? (
-                        <input
-                          value={editForm.category}
-                          onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                          className="border p-1 rounded w-full"
-                        />
-                      ) : (
-                        book.category
-                      )}
-                    </td>
-                    <td className="border px-4 py-2 text-green-600">{book.status}</td>
-                    <td className="border px-4 py-2 space-x-2">
-                      {editingId === book.id ? (
-                        <>
-                          <button
-                            onClick={() => handleEditSave(book.id)}
-                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={handleEditCancel}
-                            className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded text-xs"
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() => handleView(book)}
-                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs"
-                          >
-                            View
-                          </button>
-                          <button
-                            onClick={() => handleEditClick(book)}
-                            className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-xs"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(book.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
-                          >
-                            Delete
-                          </button>
-                        </>
-                      )}
-                    </td>
+
+            {/* Book Table */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <table className="min-w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
-                ))}
-                {Array.from({ length: emptyRows }).map((_, idx) => (
-                  <tr key={`empty-${idx}`}>
-                    <td className="border px-4 py-2">&nbsp;</td>
-                    <td className="border px-4 py-2"></td>
-                    <td className="border px-4 py-2"></td>
-                    <td className="border px-4 py-2"></td>
-                    <td className="border px-4 py-2"></td>
-                    <td className="border px-4 py-2"></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {/* Pagination Controls */}
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {paginatedBooks.map((book: any) => (
+                    <tr key={book.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {editingId === book.id ? (
+                          <input
+                            type="text"
+                            value={editForm.title}
+                            onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                            className="border p-1 rounded"
+                          />
+                        ) : (
+                          book.title
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {editingId === book.id ? (
+                          <input
+                            type="text"
+                            value={editForm.author}
+                            onChange={(e) => setEditForm({ ...editForm, author: e.target.value })}
+                            className="border p-1 rounded"
+                          />
+                        ) : (
+                          book.author
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {editingId === book.id ? (
+                          <input
+                            type="text"
+                            value={editForm.category}
+                            onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                            className="border p-1 rounded"
+                          />
+                        ) : (
+                          book.category
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{book.status}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {editingId === book.id ? (
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleEditSave(book.id)}
+                              className="text-green-600 hover:text-green-900"
+                              disabled={loading}
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={handleEditCancel}
+                              className="text-gray-600 hover:text-gray-900"
+                              disabled={loading}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleView(book.id)}
+                              className="text-blue-600 hover:text-blue-900"
+                            >
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleEditClick(book)}
+                              className="text-yellow-600 hover:text-yellow-900"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(book.id)}
+                              className="text-red-600 hover:text-red-900"
+                              disabled={loading}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
             <div className="flex justify-center items-center gap-2 mt-6">
               <button
                 onClick={handlePrevPage}

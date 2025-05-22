@@ -1,19 +1,39 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import api from './api/config'
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email && password) {
-      router.push('/dashboard')
-    } else {
-      alert('Please enter email and password')
+    setError('')
+    setLoading(true)
+
+    try {
+      const response = await api.post('/auth/login', { email, password })
+      const { token, user } = response.data
+      
+      // Store the token and user data
+      localStorage.setItem('authToken', token)
+      localStorage.setItem('userData', JSON.stringify(user))
+      
+      // Redirect based on user role
+      if (user.role === 'admin') {
+        router.push('/dashboard')
+      } else {
+        router.push('/books')
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -44,6 +64,11 @@ export default function LoginPage() {
         <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: '#6B3F08' }}>
           Login
         </h1>
+        {error && (
+          <div className="mb-4 p-2 text-red-600 bg-red-100 rounded">
+            {error}
+          </div>
+        )}
         <input
           type="email"
           placeholder="Email"
@@ -66,8 +91,9 @@ export default function LoginPage() {
           type="submit"
           className="w-full text-white py-2 rounded-md transition hover:brightness-110"
           style={{ backgroundColor: '#6B3F08' }}
+          disabled={loading}
         >
-          Log In
+          {loading ? 'Logging in...' : 'Log In'}
         </button>
       </form>
       {/* Quote below the login box */}
