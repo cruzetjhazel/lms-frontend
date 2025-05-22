@@ -30,9 +30,12 @@ export default function LoginPage() {
         }}
       />
       {/* Welcome header */}
-      <h1 className="relative z-10 text-6xl font-bold text-white mb-8 drop-shadow text-center">
+      <h1 className="relative z-10 text-7xl font-bold text-white mb-2 drop-shadow text-center">
         Welcome
       </h1>
+      <h2 className="relative z-10 text-2xl text-white mb-8 drop-shadow text-center">
+        to Library Management System
+      </h2>
       {/* Login form */}
       <form
         onSubmit={handleSubmit}
@@ -67,6 +70,10 @@ export default function LoginPage() {
           Log In
         </button>
       </form>
+      {/* Quote below the login box */}
+      <p className="relative z-10 text-lg italic text-white mt-8 drop-shadow text-center">
+        "A room without books is like a body without a soul."
+      </p>
     </div>
   )
 }
