@@ -2,13 +2,22 @@ import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 
 export default function DashboardPage() {
+  // Example stats (replace with real data from backend if needed)
+  const stats = [
+    { label: 'Total Books', value: 120 },
+    { label: 'Total Users', value: 45 },
+    { label: 'Books Borrowed', value: 32 },
+    { label: 'Books Available', value: 88 },
+    { label: 'Pending Requests', value: 4 },
+  ];
+
   return (
     <>
       <Header />
       <div
         className="flex min-h-screen"
         style={{
-          backgroundColor: '#F8F6F5', // Updated background color
+          backgroundColor: '#F8F6F5',
           backgroundImage: "url('/background2.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -16,46 +25,32 @@ export default function DashboardPage() {
       >
         <Sidebar />
         <main className="flex-1 p-10">
-          <div className="max-w-6xl mx-auto bg-white bg-opacity-50 rounded-xl shadow-md p-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-6"></h1>
-            {/* Table Section */}
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto border-collapse border border-gray-300 text-sm">
-                <thead className="bg-gray-100 text-left">
-                  <tr>
-                    <th className="border px-4 py-2">ID</th>
-                    <th className="border px-4 py-2">User</th>
-                    <th className="border px-4 py-2">Book Title</th>
-                    <th className="border px-4 py-2">Type</th>
-                    <th className="border px-4 py-2">Date</th>
-                    <th className="border px-4 py-2">Status</th>
-                    <th className="border px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Sample Record */}
-                  <tr>
-                    <td className="border px-4 py-2">1</td>
-                    <td className="border px-4 py-2">Mae</td>
-                    <td className="border px-4 py-2">The Great Gatsby</td>
-                    <td className="border px-4 py-2">Borrow</td>
-                    <td className="border px-4 py-2">2025-05-20</td>
-                    <td className="border px-4 py-2 text-green-600">Approved</td>
-                    <td className="border px-4 py-2 space-x-2">
-                      <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs">View</button>
-                      <button className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-xs">Edit</button>
-                      <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">Delete</button>
-                    </td>
-                  </tr>
-                  {/* Add more rows as needed */}
-                </tbody>
-              </table>
+          <div className="max-w-4xl mx-auto bg-white bg-opacity-70 rounded-xl shadow-md p-10">
+            <h1 className="text-5xl font-bold text-gray-800 mb-2 text-center">Overview</h1>
+            <p className="text-lg text-gray-700 mb-8 text-center">
+              Welcome to your Library Management System dashboard. Here you can get a quick overview of your library's activity and statistics.
+            </p>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+              {stats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="bg-white bg-opacity-90 rounded-lg shadow p-6 flex flex-col items-center"
+                >
+                  <div className="text-3xl font-bold text-[#834F3B] mb-2">{stat.value}</div>
+                  <div className="text-gray-700 text-lg">{stat.label}</div>
+                </div>
+              ))}
             </div>
-            {/* Add New Record Button */}
-            <div className="mt-6 text-right">
-              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
-                + Add Record
-              </button>
+            {/* About Section */}
+            <div className="bg-white bg-opacity-80 rounded-lg p-6 shadow text-center">
+              <h2 className="text-2xl font-semibold mb-2 text-[#834F3B]">About This System</h2>
+              <p className="text-gray-700 mb-2">
+                This Library Management System helps you keep track of books, users, and borrowing activities. Use the sidebar to navigate between managing books, users, and borrow records.
+              </p>
+              <p className="text-gray-700">
+                Stay organized and efficient with real-time updates and easy-to-use features designed for your library's needs.
+              </p>
             </div>
           </div>
         </main>
