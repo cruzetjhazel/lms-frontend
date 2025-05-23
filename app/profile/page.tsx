@@ -1,6 +1,8 @@
 'use client';
 
-export default function ProfilePage() {
+import { FC } from 'react';
+
+const ProfilePage: FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
@@ -30,4 +32,6 @@ export default function ProfilePage() {
       </div>
     </div>
   );
-} 
+};
+
+export default ProfilePage; 
