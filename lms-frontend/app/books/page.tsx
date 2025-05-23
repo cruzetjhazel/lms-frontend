@@ -50,36 +50,7 @@ export default function BooksPage() {
       <h2 className="text-2xl font-semibold mb-4">Book List</h2>
 
       {/* Add Book Form */}
-      <form onSubmit={handleAdd} className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <input
-          type="text"
-          placeholder="Title"
-          className="border p-2 rounded"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Author"
-          className="border p-2 rounded"
-          value={form.author}
-          onChange={(e) => setForm({ ...form, author: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          className="border p-2 rounded"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add Book
-        </button>
-      </form>
-
+     
       {/* Book Table */}
       <table className="w-full table-auto border-collapse border border-gray-300">
         <thead className="bg-gray-100">
