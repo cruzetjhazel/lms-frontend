@@ -18,12 +18,12 @@ export default function LoginPage() {
       try {
         // For demo purposes, we'll use a simple validation
         // In a real app, this would be an API call
-        if (email === 'admin@library.com' && password === 'admin123') {
+        if (email === 'admin' && password === 'admin') {
           // Store user data
           const userData = {
             username: 'Admin User',
             role: 'Administrator',
-            email: 'admin@library.com'
+            email: 'admin'
           }
           localStorage.setItem('userData', JSON.stringify(userData))
           localStorage.setItem('authToken', 'demo-token')
@@ -92,7 +92,7 @@ export default function LoginPage() {
           Login
         </h1>
         <input
-          type="email"
+          type="text"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
