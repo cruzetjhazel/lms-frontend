@@ -1,8 +1,11 @@
-'use client';
+import type { Metadata } from 'next';
 
-import { FC } from 'react';
+export const metadata: Metadata = {
+  title: 'Profile - Library Management System',
+  description: 'User profile page',
+};
 
-export default function Page() {
+function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
@@ -32,4 +35,6 @@ export default function Page() {
       </div>
     </div>
   );
-} 
+}
+
+export default ProfilePage; 
