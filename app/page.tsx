@@ -7,10 +7,14 @@ export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (email && password) {
+      setShowSuccess(true)
+      // Wait for 2 seconds to show the success message
+      await new Promise(resolve => setTimeout(resolve, 2000))
       router.push('/dashboard')
     } else {
       alert('Please enter email and password')
@@ -19,6 +23,16 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen">
+      {/* Success Message */}
+      {showSuccess && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-white text-[#6B3F08] px-8 py-4 rounded-xl shadow-lg z-50 flex items-center gap-3 border border-amber-100 backdrop-blur-sm bg-opacity-90 animate-fade-in">
+          <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="font-medium">Login successful!</span>
+        </div>
+      )}
+
       {/* Background image*/}
       <div
         className="absolute inset-0 z-0"

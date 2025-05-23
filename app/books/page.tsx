@@ -7,6 +7,7 @@ import Sidebar from '../../components/Sidebar';
 export default function BooksPage() {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [form, setForm] = useState({ title: '', author: '', category: '', status: 'Available' });
   const [books, setBooks] = useState([
     { id: 1, title: 'Introduction to React', author: 'Dan Abramov', category: 'Programming', status: 'Available' },
@@ -37,6 +38,7 @@ export default function BooksPage() {
     setCurrentPage(1);
     setLastId(newId);
     setIsAddBookOpen(false);
+    setSuccessMessage('Book added successfully!');
     setShowSuccessMessage(true);
     setTimeout(() => {
       setShowSuccessMessage(false);
@@ -52,6 +54,11 @@ export default function BooksPage() {
     if (deleteConfirm.bookId) {
       setBooks(books.filter((book) => book.id !== deleteConfirm.bookId));
       setDeleteConfirm({ show: false, bookId: null });
+      setSuccessMessage('Book deleted successfully!');
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 3000);
     }
   };
 
@@ -88,6 +95,7 @@ export default function BooksPage() {
         : book
     ));
     setEditingId(null);
+    setSuccessMessage('Book updated successfully!');
     setShowSuccessMessage(true);
     setTimeout(() => {
       setShowSuccessMessage(false);
@@ -163,12 +171,12 @@ export default function BooksPage() {
       <Header />
       {/* Success Message */}
       {showSuccessMessage && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out">
+        <div className="fixed top-4 right-4 bg-white text-[#6B3F08] px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out border border-amber-100 backdrop-blur-sm bg-opacity-90">
           <div className="flex items-center space-x-2">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-6 h-6 text-[#6B3F08]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
             </svg>
-            <span>Book added successfully!</span>
+            <span className="font-medium">{successMessage}</span>
           </div>
         </div>
       )}
