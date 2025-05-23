@@ -1,45 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const router = useRouter();
   const [showProfile, setShowProfile] = useState(false);
-  const [userData, setUserData] = useState<{ username: string; role: string; email: string } | null>(null);
-
-  useEffect(() => {
-    // Get user data from localStorage on component mount
-    const storedUserData = localStorage.getItem('userData');
-    if (storedUserData) {
-      try {
-        setUserData(JSON.parse(storedUserData));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        // If there's an error, clear the invalid data
-        localStorage.removeItem('userData');
-      }
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('userData');
-    localStorage.removeItem('authToken');
-    router.push('/');
+  
+  // Static user data
+  const userData = {
+    username: 'Admin User',
+    role: 'Administrator',
+    email: 'admin@library.com'
   };
 
-  // If no user data is found, don't render the profile section
-  if (!userData) {
-    return (
-      <header className="w-full py-3 shadow" style={{ backgroundColor: '#190F05' }}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
-          <h1 className="text-sm font-bold tracking-wide text-center text-white">
-            Library Management System
-          </h1>
-        </div>
-      </header>
-    );
-  }
+  const handleLogout = () => {
+    router.push('/');
+  };
 
   return (
     <header className="w-full py-3 shadow" style={{ backgroundColor: '#190F05' }}>

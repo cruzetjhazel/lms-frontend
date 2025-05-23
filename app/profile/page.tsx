@@ -1,32 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [userData, setUserData] = useState<{ username: string; role: string; email: string } | null>(null);
-
-  useEffect(() => {
-    // Get user data from localStorage on component mount
-    const storedUserData = localStorage.getItem('userData');
-    if (storedUserData) {
-      try {
-        setUserData(JSON.parse(storedUserData));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        router.push('/');
-      }
-    } else {
-      router.push('/');
-    }
-  }, [router]);
-
-  if (!userData) {
-    return null; // or a loading spinner
-  }
+  
+  // Static user data
+  const userData = {
+    username: 'Admin User',
+    role: 'Administrator',
+    email: 'admin@library.com'
+  };
 
   return (
     <div
