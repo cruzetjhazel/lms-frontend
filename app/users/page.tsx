@@ -165,7 +165,7 @@ export default function UsersPage() {
       )}
 
       {/* View User Dialog */}
-      {viewRecord.show && viewRecord.record && (
+      {viewRecord.show && (
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 overlay-animation">
           <div className="bg-white rounded-xl p-6 w-[400px] shadow-lg dialog-animation">
             <div className="flex justify-between items-center mb-6">
@@ -182,25 +182,25 @@ export default function UsersPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-[100px,1fr] gap-3 items-center">
                 <div className="text-gray-400 text-sm">Name</div>
-                <div className="text-gray-700">{viewRecord.record.name}</div>
+                <div className="text-gray-700">{viewRecord.record?.name}</div>
               </div>
               <div className="grid grid-cols-[100px,1fr] gap-3 items-center">
                 <div className="text-gray-400 text-sm">Email</div>
-                <div className="text-gray-700">{viewRecord.record.email}</div>
+                <div className="text-gray-700">{viewRecord.record?.email}</div>
               </div>
               <div className="grid grid-cols-[100px,1fr] gap-3 items-center">
                 <div className="text-gray-400 text-sm">Role</div>
-                <div className="text-gray-700">{viewRecord.record.role}</div>
+                <div className="text-gray-700">{viewRecord.record?.role}</div>
               </div>
               <div className="grid grid-cols-[100px,1fr] gap-3 items-center">
                 <div className="text-gray-400 text-sm">Status</div>
                 <div>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    viewRecord.record.status === 'Active' 
+                    viewRecord.record?.status === 'Active' 
                       ? 'bg-green-50 text-green-600'
                       : 'bg-red-50 text-red-600'
                   }`}>
-                    {viewRecord.record.status}
+                    {viewRecord.record?.status}
                   </span>
                 </div>
               </div>
@@ -232,7 +232,6 @@ export default function UsersPage() {
                 </svg>
               </button>
             </div>
-
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -284,7 +283,6 @@ export default function UsersPage() {
                 </select>
               </div>
             </div>
-
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={handleEditCancel}
@@ -294,7 +292,7 @@ export default function UsersPage() {
               </button>
               <button
                 onClick={() => handleEditSave(editingId)}
-                className="px-4 py-2 bg-[#834F3B] text-white rounded-lg hover:bg-amber-900 transition-all duration-200"
+                className="px-4 py-2 bg-[#834F3B] text-white rounded-lg hover:bg-amber-900 transition-colors duration-200"
               >
                 Save Changes
               </button>

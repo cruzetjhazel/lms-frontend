@@ -8,16 +8,39 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
+    
     if (email && password) {
-      setShowSuccess(true)
-      // Wait for 2 seconds to show the success message
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      router.push('/dashboard')
+      try {
+        // For demo purposes, we'll use a simple validation
+        // In a real app, this would be an API call
+        if (email === 'admin@library.com' && password === 'admin123') {
+          // Store user data
+          const userData = {
+            username: 'Admin User',
+            role: 'Administrator',
+            email: 'admin@library.com'
+          }
+          localStorage.setItem('userData', JSON.stringify(userData))
+          localStorage.setItem('authToken', 'demo-token')
+          
+          setShowSuccess(true)
+          // Wait for 2 seconds to show the success message
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          router.push('/dashboard')
+        } else {
+          setError('Invalid email or password')
+        }
+      } catch (err) {
+        setError('An error occurred. Please try again.')
+        console.error('Login error:', err)
+      }
     } else {
-      alert('Please enter email and password')
+      setError('Please enter email and password')
     }
   }
 
@@ -30,6 +53,16 @@ export default function LoginPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
           </svg>
           <span className="font-medium">Login successful!</span>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-white text-red-600 px-8 py-4 rounded-xl shadow-lg z-50 flex items-center gap-3 border border-red-100 backdrop-blur-sm bg-opacity-90 animate-fade-in">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="font-medium">{error}</span>
         </div>
       )}
 
