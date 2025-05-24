@@ -16,24 +16,23 @@ export default function LoginPage() {
     
     if (email && password) {
       try {
-        // For demo purposes, we'll use a simple validation
-        // In a real app, this would be an API call
-        if (email === 'admin' && password === 'admin') {
+        // Validate email contains '@'
+        if (email.includes('@')) {
           // Store user data
           const userData = {
-            username: 'Admin User',
-            role: 'Administrator',
-            email: 'admin'
+            username: email.split('@')[0], // Use the part before @ as username
+            role: 'User',
+            email: email
           }
           localStorage.setItem('userData', JSON.stringify(userData))
           localStorage.setItem('authToken', 'demo-token')
           
           setShowSuccess(true)
-          // Wait for 2 seconds to show the success message
-          await new Promise(resolve => setTimeout(resolve, 2000))
+          // Wait for 1 second to show the success message
+          await new Promise(resolve => setTimeout(resolve, 1000))
           router.push('/dashboard')
         } else {
-          setError('Invalid email or password')
+          setError('Please enter a valid email address')
         }
       } catch (err) {
         setError('An error occurred. Please try again.')
@@ -92,7 +91,7 @@ export default function LoginPage() {
           Login
         </h1>
         <input
-          type="text"
+          type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
