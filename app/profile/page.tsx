@@ -9,7 +9,7 @@ export default function ProfilePage() {
   
   // Static user data
   const userData = {
-    username: 'Admin User',
+    username: 'User Profile',
     role: 'Administrator',
     email: 'admin@library.com'
   };

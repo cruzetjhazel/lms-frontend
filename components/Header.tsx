@@ -9,13 +9,9 @@ export default function Header() {
   
   // Static user data
   const userData = {
-    username: 'Admin User',
+    username: 'User Profile',
     role: 'Administrator',
     email: 'admin@library.com'
-  };
-
-  const handleLogout = () => {
-    router.push('/');
   };
 
   return (
@@ -47,14 +43,6 @@ export default function Header() {
                 <p className="text-sm font-medium text-gray-900">{userData.username}</p>
                 <p className="text-xs text-gray-500 mt-1">{userData.role}</p>
                 <p className="text-xs text-gray-500 mt-1">{userData.email}</p>
-              </div>
-              <div className="pt-2">
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                >
-                  Logout
-                </button>
               </div>
             </div>
           )}
