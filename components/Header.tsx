@@ -10,7 +10,6 @@ export default function Header() {
   // Static user data
   const userData = {
     username: 'User Profile',
-    role: 'Administrator',
     email: 'admin@library.com'
   };
 
@@ -41,7 +40,6 @@ export default function Header() {
             >
               <div className="px-4 pb-3 border-b border-gray-100">
                 <p className="text-sm font-medium text-gray-900">{userData.username}</p>
-                <p className="text-xs text-gray-500 mt-1">{userData.role}</p>
                 <p className="text-xs text-gray-500 mt-1">{userData.email}</p>
               </div>
             </div>
