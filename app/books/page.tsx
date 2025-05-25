@@ -69,7 +69,7 @@ export default function BooksPage() {
     try {
       setLoading(true);
       const response = await api.get(`/admin/books/${id}`);
-      const book = response.data;
+      const book = response.data as { title: string; author: string; category: string; status: string };
       alert(`Title: ${book.title}\nAuthor: ${book.author}\nCategory: ${book.category}\nStatus: ${book.status}`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch book details');
@@ -132,9 +132,9 @@ export default function BooksPage() {
         <Sidebar />
         <main className="flex-1 p-10">
           <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Book List</h2>
+            <h2 className="mb-4 text-2xl font-semibold">Book List</h2>
             {error && (
-              <div className="mb-4 p-2 text-red-600 bg-red-100 rounded">
+              <div className="p-2 mb-4 text-red-600 bg-red-100 rounded">
                 {error}
               </div>
             )}
@@ -142,7 +142,7 @@ export default function BooksPage() {
             <input
               type="text"
               placeholder="Search by title, author, or category..."
-              className="border p-2 rounded mb-4 w-full"
+              className="w-full p-2 mb-4 border rounded"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -150,31 +150,31 @@ export default function BooksPage() {
               }}
             />
             {/* Add Book Form */}
-            <form onSubmit={handleAdd} className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form onSubmit={handleAdd} className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
               <input
                 type="text"
                 placeholder="Title"
-                className="border p-2 rounded"
+                className="p-2 border rounded"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
               <input
                 type="text"
                 placeholder="Author"
-                className="border p-2 rounded"
+                className="p-2 border rounded"
                 value={form.author}
                 onChange={(e) => setForm({ ...form, author: e.target.value })}
               />
               <input
                 type="text"
                 placeholder="Category"
-                className="border p-2 rounded"
+                className="p-2 border rounded"
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
               />
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
                 disabled={loading}
               >
                 {loading ? 'Adding...' : 'Add Book'}
@@ -182,15 +182,15 @@ export default function BooksPage() {
             </form>
 
             {/* Book Table */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="overflow-hidden bg-white rounded-lg shadow">
               <table className="min-w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Title</th>
+                    <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Author</th>
+                    <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Category</th>
+                    <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
+                    <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -202,7 +202,7 @@ export default function BooksPage() {
                             type="text"
                             value={editForm.title}
                             onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                            className="border p-1 rounded"
+                            className="p-1 border rounded"
                           />
                         ) : (
                           book.title
@@ -214,7 +214,7 @@ export default function BooksPage() {
                             type="text"
                             value={editForm.author}
                             onChange={(e) => setEditForm({ ...editForm, author: e.target.value })}
-                            className="border p-1 rounded"
+                            className="p-1 border rounded"
                           />
                         ) : (
                           book.author
@@ -226,7 +226,7 @@ export default function BooksPage() {
                             type="text"
                             value={editForm.category}
                             onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                            className="border p-1 rounded"
+                            className="p-1 border rounded"
                           />
                         ) : (
                           book.category
@@ -282,11 +282,11 @@ export default function BooksPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center items-center gap-2 mt-6">
+            <div className="flex items-center justify-center gap-2 mt-6">
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="px-3 py-1 rounded border"
+                className="px-3 py-1 border rounded"
                 style={{
                   backgroundColor: currentPage === 1 ? '#e5e7eb' : '#834F3B',
                   color: currentPage === 1 ? '#888' : '#fff',
@@ -300,7 +300,7 @@ export default function BooksPage() {
                 <button
                   key={i + 1}
                   onClick={() => handlePageClick(i + 1)}
-                  className="px-3 py-1 rounded border"
+                  className="px-3 py-1 border rounded"
                   style={{
                     backgroundColor: currentPage === i + 1 ? '#834F3B' : '#fff',
                     color: currentPage === i + 1 ? '#fff' : '#834F3B',
@@ -313,7 +313,7 @@ export default function BooksPage() {
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages || totalPages === 0}
-                className="px-3 py-1 rounded border"
+                className="px-3 py-1 border rounded"
                 style={{
                   backgroundColor: currentPage === totalPages || totalPages === 0 ? '#e5e7eb' : '#834F3B',
                   color: currentPage === totalPages || totalPages === 0 ? '#888' : '#fff',
